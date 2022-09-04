@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import re
 import time
+import rarity
 
 @dataclass(eq=True)
 class Map():
@@ -23,11 +24,7 @@ class Map():
         mods = []       
         if self.mods: mods.extend([f'{mod} {mapsDB.modHtml(mod)}' for mod in self.mods])
         if self.fragments: mods.extend([f'{f} {mapsDB.fragmentHtml(f)}' for f in self.fragments])
-        color = 'black'
-        if self.rarity == 'Magic':
-            color = 'blue'
-        elif self.rarity == 'Rare':
-            color = '#880'
+        color = rarity.getColor(self.rarity)        
         status = 'Not Started'
         if self.map_start:
             status = 'Started'
