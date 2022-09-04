@@ -32,6 +32,6 @@ def BuildSummary(mapsDB):
     html.append("<br/><br/><div>(maybe)Rare deadly mods</div>")
     for mod, data in sorted(mapsDB._mods.items(), key=lambda x: x[1].ratio, reverse=True)[:10]:
         html.append(f"<li>{data.runs} maps, died {data.deaths} times or {data.ratio:0.2f} deaths/run: {mod}")
-    return ''.join(html)
+    return ' '.join(html)
 
 
