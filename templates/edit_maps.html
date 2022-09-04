@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+    <script src="/static/edit_maps.js"></script>
+    <style>
+        tr:hover {
+            background-color: aquamarine;
+        }
+    </style>
+    <head>
+        <title>PoE Map Tracker - Edit Saved Maps</title>
+    </head>
+    <body>
+        <h2>Here are your maps</h2>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Map Name</th>
+                <th>Duration</th>
+                <th>Deaths</th>
+                <th>Remove</th>
+            </tr>
+            {% for m in maps %}
+            <tr>
+                <td>{{m.date}}</td>
+                <td>{{m.name}}</td>
+                <td>{{m.duration}}</td>
+                <td>{{m.deaths}}</td>
+                <td><button onClick="remove_map('{{m.id}}')">X</button></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </body>
+</html>

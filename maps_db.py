@@ -1,7 +1,11 @@
+from operator import truediv
 import pickle
+from re import I
+import time
 
 import stats
 from map import Map
+
 
 class MapsDB():
     def __init__(self, db_file):
@@ -63,3 +67,25 @@ class MapsDB():
                 if f not in self._fragments:
                     self._fragments[f] = stats.Stats()
                 self._fragments[f].update(m)
+
+    def remove(self, map_id):
+        print(map_id)
+        map_id = int(map_id)
+        for m in self._all_maps:
+            print(hash(m), '  ', map_id)
+            if hash(m) == map_id:
+                self._all_maps.remove(m)
+                return True
+        return False
+
+    def GetMapsContext(self):
+        r = []
+        for m in self._all_maps[::-1]:
+            r.append({
+                'date': time.strftime("%b %d %a; %H:%M:%S", m.time),
+                'name': f'{m.rarity} T{m.tier} {m.name}',
+                'duration': ("%0.2f" % ((m.map_stop - m.map_start)/60.)) if m.map_stop and m.map_start else "invalid",
+                'deaths': m.deaths,
+                'id': f"{hash(m)}",
+            })
+        return r

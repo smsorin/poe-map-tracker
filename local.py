@@ -35,7 +35,11 @@ class LocalLoop():
         socketio.on_event('died', self.Died)
         socketio.on_event('undo_death', self.UndoDeath)
         socketio.on_event('map_fail', self.MapFail)
+        socketio.on_event('remove_map', self.RemoveMap)
 
+    def RemoveMap(self, map_id):
+        if not self.mapsDB.remove(map_id):
+            print("Error. Removing the map failed.")
         
     def UpdateCurrentItem(self, new_item):
         self.current_item = new_item

@@ -9,8 +9,6 @@
     <script type="text/javascript" charset="utf-8">
         var socket = io();
         SetupSocket(socket)
-
-      
         function onLoad() {
             ajax("/maps_summary", UpdateMapsSummary);
             socket.emit("trigger_item_update");
@@ -22,6 +20,11 @@
                 width: 300px;
                 height: 100px;
                 font-size: 50px;
+            {% endif %}
+        }
+        a {
+            {% if is_mobile %}                
+                font-size: 40px;
             {% endif %}
         }
     </style>
@@ -36,8 +39,15 @@
         <button onClick="stop_map()">Map Done</button>
         <button onClick="save_map()">Save</button>
         <div id="current_map"></div>
+        {% if is_mobile %}
+        <br/>
+        <a href='/maps_summary'>See Summary of your maps</a> <br/>
+        {% else %}
         <H2>Your adventure so far...</H2>
         <div id="maps_summary"></div>
+        {% endif %}
+        <a href='/edit_maps'>Edit Saved maps</a>
+
     </body>
     
     

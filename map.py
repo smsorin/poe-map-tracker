@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import re
 import time
 
-@dataclass
+@dataclass(eq=True)
 class Map():
     rarity: str = None
     name: str = None
@@ -96,3 +96,6 @@ class Map():
             if line: m.mods.append(line)
             
         return m
+
+    def __hash__(self):
+        return hash(self.time)

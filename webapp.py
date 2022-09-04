@@ -29,6 +29,11 @@ def handle_custom_event():
 def handle_maps_summary():
     return maps_summary.BuildSummary(local_loop.mapsDB)
 
+@app.route("/edit_maps")
+def handle_edit_maps():
+    maps = local_loop.mapsDB.GetMapsContext()    
+    return render_template('edit_maps.html', maps=maps)
+
 def sendUpdate():
     if not local_loop.current_item: 
         socketio.emit("item_update", "")    
