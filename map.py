@@ -42,13 +42,12 @@ class Map():
         </div>
         '''
 
-    def Save(self):
-        if not self.map_start:
-            self.map_start = int(time.mktime(self.time))
-        if not self.map_stop:
-            self.map_stop = int(time.time())
-        with open(mapDB, 'ab+') as pf:
-            pickle.dump(self, pf)
+    def AddFragment(self, f):
+        if not self.fragments:
+            self.fragments = [f.name]
+        else:
+            self.fragments.append(f.name)        
+
     @staticmethod
     def Parse(lines):
         l = 1

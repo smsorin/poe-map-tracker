@@ -4,15 +4,16 @@ import stats
 from map import Map
 
 class MapsDB():
-    def __init__(self):
+    def __init__(self, db_file):
         self._all_maps = []
         self._tiers = {}
         self._mods = {}
         self._fragments = {}
         self._total = stats.Stats()
+        self._db_file = db_file
 
-    def LoadFrom(self, mapDB):
-        with open(mapDB, 'rb') as pf:
+    def Load(self):
+        with open(self._db_file, 'rb') as pf:
             try:
                 while True:
                     self.add(pickle.load(pf))
@@ -20,6 +21,10 @@ class MapsDB():
                 pass
         print(f'Loaded {len(self._all_maps)} maps.')
     
+    def Save(self, map):
+        self.add(map)
+        with open(self._db_file, 'ab+') as pf:
+            pickle.dump(map, pf)
         
     @staticmethod
     def formatMod(mod):

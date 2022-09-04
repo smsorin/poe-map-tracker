@@ -32,3 +32,13 @@ function UpdateCurrentMap(data) {
     }
     div.innerHTML = data
 }
+
+function start_map() {
+    socket.emit("start_map");
+}
+function stop_map() {
+    socket.emit("stop_map");
+}
+function save_map() {
+    socket.emit("save_map");
+}

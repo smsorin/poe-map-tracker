@@ -5,4 +5,7 @@ function SetupSocket(socket) {
     socket.on('item_update', (data) => {
         UpdateCurrentMap(data);        
     });
+    socket.on('summary_update', () => {
+        ajax("/maps_summary", UpdateMapsSummary);
+    })
 }

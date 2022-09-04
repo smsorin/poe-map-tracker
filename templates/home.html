@@ -13,11 +13,15 @@
       
         function onLoad() {
             ajax("/maps_summary", UpdateMapsSummary);
+            socket.emit("trigger_item_update");
         };
     </script>
     <body onload="onLoad()">
         <H2>Current Map</H2>
         <div id="current_map"></div>
+        <button onClick="start_map()">Start</button>
+        <button onClick="stop_map()">Map Done</button>
+        <button onClick="save_map()">Save</button>
         <H2>Your adventure so far...</H2>
         <div id="maps_summary"></div>
     </body>
