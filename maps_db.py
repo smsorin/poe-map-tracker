@@ -1,4 +1,5 @@
 from operator import truediv
+from os import stat
 import pickle
 from re import I
 import time
@@ -11,11 +12,14 @@ from contract import Contract
 class MapsDB():
     def __init__(self, db_file):
         self._all_maps = []
+        self._all_contracts = []
         self._tiers = {}
         self._mods = {}
         self._fragments = {}
         self._total = stats.Stats()
         self._db_file = db_file
+        self._contract_levels = {}
+        self._contract_total = stats.Stats()
 
     def Load(self):
         with open(self._db_file, 'rb') as pf:
@@ -40,6 +44,11 @@ class MapsDB():
         if tier not in self._tiers:
             return ""
         return self._tiers[tier].html(self._total)
+
+    def contractLvlHtml(self, ilvl):
+        if ilvl not in self._contract_levels:
+            return ""
+        return self._contract_levels[ilvl].html(self._contract_total)
         
     def modHtml(self, mod):
         mod = self.formatMod(mod)
@@ -59,7 +68,13 @@ class MapsDB():
             if mod_name not in self._mods:
                 self._mods[mod_name] = stats.Stats()
             self._mods[mod_name].update(m)
-        
+        if isinstance(m, Contract):
+            self._all_contracts.append(m)
+            self._contract_total.update(m)
+            if m.ilvl not in self._contract_levels:
+                self._contract_levels[m.ilvl] = stats.Stats()
+            self._contract_levels[m.ilvl].update(m)
+
         if isinstance(m, Map):
             self._all_maps.append(m)
         

@@ -6,6 +6,7 @@ import maps_db
 import item_parser
 import map
 import fragment
+import contract
 
 def _GetClipBoard():
     try:

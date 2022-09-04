@@ -2,9 +2,10 @@ NORMAL = ''
 MAGIC = 'Magic'
 RARE = 'Rare'
 
-def getColor(rarity:stri) -> str:
-    if rarity == MAGIC:
+def getColor(r:str) -> str:
+    print(r)
+    if r == MAGIC:
         return 'blue'
-    if rarity == RARE:
+    if r == RARE:
         return '#880'
     return 'black'

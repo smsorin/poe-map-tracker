@@ -1,3 +1,4 @@
+import re
 
 def Parser(rules, target, lines):
     rule_index = 0
