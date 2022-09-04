@@ -5,6 +5,7 @@ import time
 
 import stats
 from map import Map
+from contract import Contract
 
 
 class MapsDB():
@@ -52,21 +53,24 @@ class MapsDB():
         return self._fragments[fragment].html(self._total)
     
     def add(self, m):
-        self._all_maps.append(m)
         self._total.update(m)
-        if m.tier not in self._tiers:
-            self._tiers[m.tier] = stats.Stats()
-        self._tiers[m.tier].update(m)
         for mod in m.mods:
             mod_name = self.formatMod(mod)            
             if mod_name not in self._mods:
                 self._mods[mod_name] = stats.Stats()
             self._mods[mod_name].update(m)
-        if m.fragments:
-            for f in m.fragments:
-                if f not in self._fragments:
-                    self._fragments[f] = stats.Stats()
-                self._fragments[f].update(m)
+        
+        if isinstance(m, Map):
+            self._all_maps.append(m)
+        
+            if m.tier not in self._tiers:
+                self._tiers[m.tier] = stats.Stats()
+            self._tiers[m.tier].update(m)
+            if m.fragments:
+                for f in m.fragments:
+                    if f not in self._fragments:
+                        self._fragments[f] = stats.Stats()
+                    self._fragments[f].update(m)
 
     def remove(self, map_id):
         print(map_id)

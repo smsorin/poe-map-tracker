@@ -112,7 +112,7 @@ class LocalLoop():
             
             last_text = text
             item = item_parser.ParseItem(text)
-            if isinstance(item, map.Map):
+            if isinstance(item, map.Map) or isinstance(item, contract.Contract):
                 self.UpdateCurrentItem(item)
             elif isinstance(item, fragment.Fragment):
                 self.UpdateFrament(item)                

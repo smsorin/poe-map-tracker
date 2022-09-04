@@ -7,6 +7,7 @@ import maps_summary
 # Pickle imports
 from map import Map
 from fragment import Fragment
+from contract import Contract
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
