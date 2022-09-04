@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from flask_socketio import SocketIO
 
 import local
@@ -14,8 +14,12 @@ socketio = SocketIO(app)
 local_loop = None
 
 @app.route("/")
-def hello_world():    
-    return render_template('home.html')
+def index():
+    user_agent = request.headers.get('User-Agent').lower()
+    is_mobile = 'android' in user_agent
+    print(user_agent)
+    print(is_mobile)
+    return render_template('home.html', is_mobile=is_mobile)
 
 @socketio.on('trigger_item_update')
 def handle_custom_event():
@@ -35,4 +39,4 @@ def sendUpdate():
 if __name__ == '__main__':
     local_loop = local.LocalLoop(socketio)
     local_loop.on_update = sendUpdate
-    socketio.run(app)
+    socketio.run(app, host="0.0.0.0")

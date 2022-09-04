@@ -16,12 +16,26 @@
             socket.emit("trigger_item_update");
         };
     </script>
+    <style>
+        button {
+            {% if is_mobile %}
+                width: 300px;
+                height: 100px;
+                font-size: 50px;
+            {% endif %}
+        }
+    </style>
     <body onload="onLoad()">
-        <H2>Current Map</H2>
-        <div id="current_map"></div>
+        <H2>Current Map</H2>        
+        <button onClick="map_died()">Died</button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button onClick="map_undo_death()">Undo Death</button>
+        <button onClick="map_fail()">Map Fail</button>
+        <br/><br/>
         <button onClick="start_map()">Start</button>
         <button onClick="stop_map()">Map Done</button>
         <button onClick="save_map()">Save</button>
+        <div id="current_map"></div>
         <H2>Your adventure so far...</H2>
         <div id="maps_summary"></div>
     </body>

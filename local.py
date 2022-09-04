@@ -32,6 +32,9 @@ class LocalLoop():
         socketio.on_event('start_map', self.StartMap)
         socketio.on_event('stop_map', self.StopMap)
         socketio.on_event('save_map', self.SaveMap)
+        socketio.on_event('died', self.Died)
+        socketio.on_event('undo_death', self.UndoDeath)
+        socketio.on_event('map_fail', self.MapFail)
 
         
     def UpdateCurrentItem(self, new_item):
@@ -50,7 +53,24 @@ class LocalLoop():
             if self.current_item:
                 self.current_item.AddFragment(new_fragment)
 
-            
+    def Died(self):
+        if self.current_item is None: return
+        self.current_item.deaths += 1
+        if self.current_item.deaths > 6:
+            self.current_item.deaths = 6
+        if self.on_update: self.on_update()
+    
+    def UndoDeath(self):
+        if self.current_item is None: return
+        self.current_item.deaths -= 1
+        if self.current_item.deaths < 0:
+            self.current_item.deaths = 0
+        if self.on_update: self.on_update()
+    
+    def MapFail(self):
+        if self.current_item is None: return
+        self.current_item.deaths = 6        
+        if self.on_update: self.on_update()
 
     def StartMap(self):
         if self.current_item is None: return

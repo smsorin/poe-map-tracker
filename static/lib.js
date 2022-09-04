@@ -42,3 +42,13 @@ function stop_map() {
 function save_map() {
     socket.emit("save_map");
 }
+
+function map_died() {
+    socket.emit('died');
+}
+function map_undo_death() {
+    socket.emit('undo_death');
+}
+function map_fail() {   
+    socket.emit('map_fail');
+}
