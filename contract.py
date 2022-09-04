@@ -68,3 +68,6 @@ class Contract():
         ]
         Parser(rules, c, lines)
         return c
+    
+    def __hash__(self):
+        return hash(self.time)

@@ -12,7 +12,6 @@ from contract import Contract
 class MapsDB():
     def __init__(self, db_file):
         self._all_maps = []
-        self._all_contracts = []
         self._tiers = {}
         self._mods = {}
         self._fragments = {}
@@ -68,15 +67,16 @@ class MapsDB():
             if mod_name not in self._mods:
                 self._mods[mod_name] = stats.Stats()
             self._mods[mod_name].update(m)
-        if isinstance(m, Contract):
-            self._all_contracts.append(m)
+        self._all_maps.append(m)
+
+        if isinstance(m, Contract):            
             self._contract_total.update(m)
             if m.ilvl not in self._contract_levels:
                 self._contract_levels[m.ilvl] = stats.Stats()
             self._contract_levels[m.ilvl].update(m)
 
         if isinstance(m, Map):
-            self._all_maps.append(m)
+            
         
             if m.tier not in self._tiers:
                 self._tiers[m.tier] = stats.Stats()
@@ -100,9 +100,14 @@ class MapsDB():
     def GetMapsContext(self):
         r = []
         for m in self._all_maps[::-1]:
+            if isinstance(m, Map):
+                name = f'{m.rarity} T{m.tier} {m.name}'
+            if isinstance(m, Contract):
+                name = f'{m.ilvl} {m.skill} - {m.name}'
+                
             r.append({
                 'date': time.strftime("%b %d %a; %H:%M:%S", m.time),
-                'name': f'{m.rarity} T{m.tier} {m.name}',
+                'name': name,
                 'duration': ("%0.2f" % ((m.map_stop - m.map_start)/60.)) if m.map_stop and m.map_start else "invalid",
                 'deaths': m.deaths,
                 'id': f"{hash(m)}",
