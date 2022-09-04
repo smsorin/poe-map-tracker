@@ -19,10 +19,10 @@ class Map():
     map_stop: int = 0
     deaths: int = 0
 
-    def html(self):
+    def html(self, mapsDB):
         mods = []       
-        if self.mods: mods.extend([f'{mod} {all_maps.modHtml(mod)}' for mod in self.mods])
-        if self.fragments: mods.extend([f'{f} {all_maps.fragmentHtml(f)}' for f in self.fragments])
+        if self.mods: mods.extend([f'{mod} {mapsDB.modHtml(mod)}' for mod in self.mods])
+        if self.fragments: mods.extend([f'{f} {mapsDB.fragmentHtml(f)}' for f in self.fragments])
         color = 'black'
         if self.rarity == 'Magic':
             color = 'blue'
@@ -35,7 +35,7 @@ class Map():
                 status = f'Done in {(self.map_stop - self.map_start) / 60.0} minutes'
         return f'''<div>
             <span style="color:{color}">{self.quality}% T{self.tier} {self.name}
-            </span> {all_maps.tierHtml(self.tier)}
+            </span> {mapsDB.tierHtml(self.tier)}
             {''.join([f'<li>{mod}' for mod in mods])}<br>
             {status}<br>
             {self.deaths} deaths
