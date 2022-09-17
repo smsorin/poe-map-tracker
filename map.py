@@ -20,6 +20,9 @@ class Map():
     map_stop: int = 0
     deaths: int = 0
 
+    def __init__(self) -> None:
+        self.mods = []
+
     def html(self, mapsDB):
         mods = []       
         if self.mods: mods.extend([f'{mod} {mapsDB.modHtml(mod)}' for mod in self.mods])
