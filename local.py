@@ -1,12 +1,17 @@
-import time
-import threading
-import win32clipboard
-
 import maps_db
 import item_parser
 import map
 import fragment
 import contract
+import config
+
+import datetime
+import re
+import time
+import threading
+import win32clipboard
+import os
+
 
 def _GetClipBoard():
     try:
@@ -18,9 +23,12 @@ def _GetClipBoard():
         return ""
     return text
 
+def _ParseTime(text):
+    return int(datetime.datetime.strptime(entered.group[1], '%Y/%m/%d %H:%M:%s').timestamp())
+
 class LocalLoop():    
     def __init__(self, socketio):
-        self.mapsDB = maps_db.MapsDB("maps.pickle")
+        self.mapsDB = maps_db.MapsDB(config.MAPS_DB)
         self.mapsDB.Load()
         self.on_update = None
         self.current_item = None
@@ -37,6 +45,9 @@ class LocalLoop():
         socketio.on_event('undo_death', self.UndoDeath)
         socketio.on_event('map_fail', self.MapFail)
         socketio.on_event('remove_map', self.RemoveMap)
+
+        self.poe_log = open(config.POE_CLIENT_LOG, 'r')
+        self.poe_log.seek(0, os.SEEK_END)
 
     def RemoveMap(self, map_id):
         if not self.mapsDB.remove(map_id):
@@ -104,19 +115,50 @@ class LocalLoop():
         self.current_item = None
         if self.on_update: self.on_update()
 
+    def doLogUpdate(self):     
+        while line := self.poe_log.readline():
+             entered = re.match(line, r'([\d/]+ [\d:]+) .* : You have entered (.*)\.')
+             if entered:
+                t = _ParseTime(entered.group[1])
+                location = entered.group[2]
+                if location == "Cartographer's Hideout":
+                    # Entered the hideout, possible map end event.
+                    if self.current_item and self.current_item.map_start and not self.current_item.map_stop:
+                        self.current_item.map_stop = t
+                        print(t, int(time.time()))  # DEBUG
+                        if self.on_update: self.on_update()
+                elif self.current_item and location + ' Map' == self.current_item.name:
+                    # Entered the map, possible map start event
+                    print(t, int(time.time()))  # DEBUG
+                    if not self.current_item.map_start:
+                        self.current_item.map_start = t
+                    # Remove the map stop since we're back in the map.
+                    if self.current_item.map_stop:
+                        self.current_item.map_stop = 0
+                    if self.on_update: self.on_update()
+                else:
+                    print('Player went somewhere I don\'t know about:', location)
+                    if self.current_item:
+                        print('Waiting for player to go to:', self.current_item.name)
+                continue   
+             slain = re.match(line, r'([\d/]+ [\d:]+) .* has been slain\.')
+             if slain:
+                self.Died()             
+
     def loop(self):
         last_text = None
         while True:
             time.sleep(0.3)
             text = _GetClipBoard()        
-            if text == last_text: continue
-            
-            last_text = text
-            item = item_parser.ParseItem(text)
-            if isinstance(item, map.Map) or isinstance(item, contract.Contract):
-                self.UpdateCurrentItem(item)
-            elif isinstance(item, fragment.Fragment):
-                self.UpdateFrament(item)                
-            
-            if self.on_update: self.on_update()
+            if text != last_text:     
+                last_text = text
+                print('New text in clipboard: ', text)
+                item = item_parser.ParseItem(text)
+                if isinstance(item, map.Map) or isinstance(item, contract.Contract):
+                    self.UpdateCurrentItem(item)
+                elif isinstance(item, fragment.Fragment):
+                    self.UpdateFrament(item)                
+                
+                if self.on_update: self.on_update()
+            self.doLogUpdate()
     
