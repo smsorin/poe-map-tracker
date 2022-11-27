@@ -124,13 +124,14 @@ class LocalLoop():
                 print('Detected Entering a new location...')
                 t = _ParseTime(entered.group(1))
                 location = entered.group(2)
+
                 if location == "Cartographer's Hideout" or location == 'The Rogue Harbour': 
                     # Entered the hideout, possible map end event.
                     if self.current_item and self.current_item.map_start and not self.current_item.map_stop:
                         self.current_item.map_stop = t
                         if self.on_update: self.on_update()
-                elif self.current_item and (location + ' Map' == self.current_item.name or
-                                      (isinstance(self.current_item, contract.Contract) and self.current_item.location == location)):
+                elif self.current_item and (location in self.current_item.name or
+                                      (isinstance(self.current_item, contract.Contract) and location in self.current_item.location)):
                     # Entered the map, possible map start event
                     if not self.current_item.map_start:
                         self.current_item.map_start = t
@@ -141,7 +142,10 @@ class LocalLoop():
                 else:
                     print('Player went somewhere I don\'t know about:', location)
                     if self.current_item:
-                        print('Waiting for player to go to:', self.current_item.name)
+                        if isinstance(self.current_item, map.Map):
+                            print('Waiting for player to go to:', self.current_item.name)
+                        elif isinstance(self.current_item, contract.Contract):
+                            print('Waiting for player to go to:', self.current_item.location)
                 continue   
             slain = re.match(r'([\d/]+ [\d:]+) .* has been slain\.', line)
             if slain:
@@ -155,7 +159,6 @@ class LocalLoop():
             text = _GetClipBoard()        
             if text != last_text:     
                 last_text = text
-                print('New text in clipboard: ', text)
                 item = item_parser.ParseItem(text)
                 if isinstance(item, map.Map) or isinstance(item, contract.Contract):
                     self.UpdateCurrentItem(item)
