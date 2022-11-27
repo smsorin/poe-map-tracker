@@ -11,7 +11,12 @@ def Parser(rules, target, lines):
                 result = re.match(r, l)                
                 if result:
                     if len(result.groups()) == 1:
-                        setattr(target, attr, result.group(1))
+                        v = getattr(target, attr)
+                        if isinstance(v, list):
+                            v.append(result.group(1))
+                            setattr(target, attr, v)
+                        else:
+                            setattr(target, attr, result.group(1))
                     else:
                         mod = result.group(1) + '#' + result.group(3) + ', ' + result.group(2)
                         v = getattr(target, attr)

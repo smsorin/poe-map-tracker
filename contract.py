@@ -49,6 +49,7 @@ class Contract():
     @staticmethod
     def Parse(lines):
         c = Contract()
+        c.mods = []
         c.time = time.localtime()
         rules =[
             [(r'Rarity: (\w+)', 'rarity'),
@@ -64,7 +65,9 @@ class Contract():
              (r'Maximum Alive Reinforcements: +(\d+)%', 'max_reinforcements'),
             ],
             [(r'Item Level: (\d+)', 'ilvl')],
-            [(r'([^\d]*)(\d+)(.*)', 'mods')],
+            [(r'([^\d]*)(\d+)(.*)', 'mods'),
+             (r'(.*)', 'mods'),
+            ],
         ]
         Parser(rules, c, lines)
         return c
