@@ -31,12 +31,14 @@
     <body onload="onLoad()">
         <H2>Current Map</H2>        
         <button onClick="map_died()">Died</button>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span style=" display:inline-block;margin-right:0.5in">&nbsp;</span>
+        
         <button onClick="map_undo_death()">Undo Death</button>
         <button onClick="map_fail()">Map Fail</button>
-        <br/><br/>
+        <span style=" display:inline-block;margin-right:0.5in">&nbsp;</span>
         <button onClick="start_map()">Start</button>
         <button onClick="stop_map()">Map Done</button>
+        <br/><br/><br/>
         <button onClick="save_map()">Save</button>
         <div id="current_map"></div>
         {% if is_mobile %}
