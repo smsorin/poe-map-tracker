@@ -18,8 +18,6 @@ local_loop = None
 def index():
     user_agent = request.headers.get('User-Agent').lower()
     is_mobile = 'android' in user_agent
-    print(user_agent)
-    print(is_mobile)
     return render_template('home.html', is_mobile=is_mobile)
 
 @socketio.on('trigger_item_update')

@@ -24,7 +24,7 @@ def _GetClipBoard():
     return text
 
 def _ParseTime(text):
-    return int(datetime.datetime.strptime(entered.group[1], '%Y/%m/%d %H:%M:%s').timestamp())
+    return int(datetime.datetime.strptime(text, '%Y/%m/%d %H:%M:%S').timestamp())
 
 class LocalLoop():    
     def __init__(self, socketio):
@@ -54,6 +54,8 @@ class LocalLoop():
             print("Error. Removing the map failed.")
         
     def UpdateCurrentItem(self, new_item):
+        if self.current_item and self.current_item.map_start and self.current_item.map_stop:
+            self.SaveMap()
         self.current_item = new_item
         for f in self.current_fragments:
             self.current_item.AddFragment(f)
@@ -94,7 +96,7 @@ class LocalLoop():
         new_fragments = []
         for f in self.current_fragments:
             f.stack -= 1
-            if f.stack > 1:
+            if f.stack >= 1:
                 new_fragments.append(f)
 
         self.current_fragments = new_fragments
@@ -117,19 +119,18 @@ class LocalLoop():
 
     def doLogUpdate(self):     
         while line := self.poe_log.readline():
-             entered = re.match(line, r'([\d/]+ [\d:]+) .* : You have entered (.*)\.')
-             if entered:
-                t = _ParseTime(entered.group[1])
-                location = entered.group[2]
-                if location == "Cartographer's Hideout":
+            entered = re.match(r'([\d/]+ [\d:]+) .* : You have entered (.*)\.', line)
+            if entered:
+                print('Detected Entering a new location...')
+                t = _ParseTime(entered.group(1))
+                location = entered.group(2)
+                if location == "Cartographer's Hideout" or location == 'The Rogue Harbour': 
                     # Entered the hideout, possible map end event.
                     if self.current_item and self.current_item.map_start and not self.current_item.map_stop:
                         self.current_item.map_stop = t
-                        print(t, int(time.time()))  # DEBUG
                         if self.on_update: self.on_update()
                 elif self.current_item and location + ' Map' == self.current_item.name:
                     # Entered the map, possible map start event
-                    print(t, int(time.time()))  # DEBUG
                     if not self.current_item.map_start:
                         self.current_item.map_start = t
                     # Remove the map stop since we're back in the map.
@@ -141,9 +142,10 @@ class LocalLoop():
                     if self.current_item:
                         print('Waiting for player to go to:', self.current_item.name)
                 continue   
-             slain = re.match(line, r'([\d/]+ [\d:]+) .* has been slain\.')
-             if slain:
-                self.Died()             
+            slain = re.match(r'([\d/]+ [\d:]+) .* has been slain\.', line)
+            if slain:
+                print('Detected player? death...')
+                self.Died()
 
     def loop(self):
         last_text = None
