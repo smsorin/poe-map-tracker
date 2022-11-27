@@ -129,7 +129,8 @@ class LocalLoop():
                     if self.current_item and self.current_item.map_start and not self.current_item.map_stop:
                         self.current_item.map_stop = t
                         if self.on_update: self.on_update()
-                elif self.current_item and location + ' Map' == self.current_item.name:
+                elif self.current_item and (location + ' Map' == self.current_item.name or
+                                      (isinstance(self.current_item, contract.Contract) and self.current_item.location == location)):
                     # Entered the map, possible map start event
                     if not self.current_item.map_start:
                         self.current_item.map_start = t
