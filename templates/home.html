@@ -7,8 +7,8 @@
         <title> PoE Map tracker</title>
     </head>
     <script type="text/javascript" charset="utf-8">
-        var socket = io();
-        SetupSocket(socket)
+        var socket = io.connect(null, {rememberTransport:false});
+        SetupSocket(socket);
         function onLoad() {
             ajax("/maps_summary", UpdateMapsSummary);
             socket.emit("trigger_item_update");

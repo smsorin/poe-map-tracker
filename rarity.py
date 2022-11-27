@@ -3,7 +3,6 @@ MAGIC = 'Magic'
 RARE = 'Rare'
 
 def getColor(r:str) -> str:
-    print(r)
     if r == MAGIC:
         return 'blue'
     if r == RARE:
