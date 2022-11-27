@@ -68,8 +68,8 @@ There are two paths to configure. For both you can open a file explorer go locat
 
 This is a app developed in my spare time. Should be functional but it's far from preety.
 
-*This thing is not secure.* It will open a port on your device, than theoretically anybody can connect to. Normally most home networks have a firewall built-in and rely on UpNP to open ports to the outside. This app, by itself won't do UPNP but if you have something strange configure it might be automatically forwarded. It should be OK as long as you're not opening the port to the outside world. Others on the local network can also grieve you (press buttons, delete history, mess up statistics, etc)
+**This thing is not secure.** It will open a port on your device, than theoretically anybody can connect to. Normally most home networks have a firewall built-in and rely on UpNP to open ports to the outside. This app, by itself won't do UPNP but if you have something strange configure it might be automatically forwarded. It should be OK as long as you're not opening the port to the outside world. Others on the local network can also grieve you (press buttons, delete history, mess up statistics, etc)
 
-*This thing is not secure.* The local database is a very insecure format called pickle. It's read by running potentially insecure code.
+**This thing is not secure.** The local database is a very insecure format called pickle. It's read by running potentially insecure code.
 
-*This thing is not secure.* Do not run it on anything that should be secure. 
+**This thing is not secure.** Do not run it on anything that should be secure. 
