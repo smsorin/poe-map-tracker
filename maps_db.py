@@ -21,13 +21,16 @@ class MapsDB():
         self._contract_total = stats.Stats()
 
     def Load(self):
-        with open(self._db_file, 'rb') as pf:
-            try:
-                while True:
-                    self.add(pickle.load(pf))
-            except EOFError:
-                pass
-        print(f'Loaded {len(self._all_maps)} maps.')
+        try:
+            with open(self._db_file, 'rb') as pf:
+                try:
+                    while True:
+                        self.add(pickle.load(pf))
+                except EOFError:
+                    pass
+            print(f'Loaded {len(self._all_maps)} maps.')
+        except Exception as e:
+            print(f'Some error occured, no maps loaded: {e}')
     
     def Save(self, map):
         self.add(map)
