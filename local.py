@@ -14,13 +14,17 @@ import os
 
 
 def _GetClipBoard():
+    text = ""
     try:
         win32clipboard.OpenClipboard()
         text = win32clipboard.GetClipboardData()
-        win32clipboard.CloseClipboard()    
     except:
-        # print("Can't get the clipboard, trying again later")   
-        return ""
+        pass
+    finally:
+        try:
+            win32clipboard.CloseClipboard()
+        except:
+            pass
     return text
 
 def _ParseTime(text):
