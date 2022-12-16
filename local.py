@@ -46,7 +46,7 @@ class LocalLoop():
         socketio.on_event('map_fail', self.MapFail)
         socketio.on_event('remove_map', self.RemoveMap)
 
-        self.poe_log = open(config.POE_CLIENT_LOG, 'r')
+        self.poe_log = open(config.POE_CLIENT_LOG, 'r', encoding='utf-8', errors='replace')
         self.poe_log.seek(0, os.SEEK_END)
 
     def RemoveMap(self, map_id):
