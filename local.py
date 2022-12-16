@@ -19,7 +19,7 @@ def _GetClipBoard():
         text = win32clipboard.GetClipboardData()
         win32clipboard.CloseClipboard()    
     except:
-        print("Can't get the clipboard, trying again later")   
+        # print("Can't get the clipboard, trying again later")   
         return ""
     return text
 
