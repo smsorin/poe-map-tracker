@@ -49,6 +49,7 @@ class LocalLoop():
         socketio.on_event('undo_death', self.UndoDeath)
         socketio.on_event('map_fail', self.MapFail)
         socketio.on_event('remove_map', self.RemoveMap)
+        socketio.on_event('reset_fragments', self.ResetFragments)
 
         self.poe_log = open(config.POE_CLIENT_LOG, 'r', encoding='utf-8', errors='replace')
         self.poe_log.seek(0, os.SEEK_END)
@@ -56,6 +57,12 @@ class LocalLoop():
     def RemoveMap(self, map_id):
         if not self.mapsDB.remove(map_id):
             print("Error. Removing the map failed.")
+
+    def ResetFragments(self):
+        self.current_fragments = []
+        if self.current_item:
+            self.current_item.fragments = []
+            if self.on_update: self.on_update()
         
     def UpdateCurrentItem(self, new_item):
         if self.current_item and self.current_item.map_start and self.current_item.map_stop:
@@ -132,13 +139,12 @@ class LocalLoop():
                 if location == "Cartographer's Hideout" or location == 'The Rogue Harbour': 
                     # Entered the hideout, possible map end event.
                     if self.current_item and self.current_item.map_start and not self.current_item.map_stop:
-                        self.current_item.map_stop = t
-                        if self.on_update: self.on_update()
+                        self.StopMap()                        
                 elif self.current_item and (location in self.current_item.name or
                                       (isinstance(self.current_item, contract.Contract) and location in self.current_item.location)):
                     # Entered the map, possible map start event
                     if not self.current_item.map_start:
-                        self.current_item.map_start = t
+                        self.StartMap()
                     # Remove the map stop since we're back in the map.
                     if self.current_item.map_stop:
                         self.current_item.map_stop = 0

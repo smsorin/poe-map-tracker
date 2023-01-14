@@ -52,3 +52,7 @@ function map_undo_death() {
 function map_fail() {   
     socket.emit('map_fail');
 }
+
+function reset_fragments() {
+    socket.emit('reset_fragments');
+}
